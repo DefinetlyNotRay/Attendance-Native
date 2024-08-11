@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,21 @@ const login = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter();
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          // Redirect to login if the token is missing
+          router.replace('/HomePage');
+        }
+      } catch (error) {
+        console.error('Login First');
+      }
+    };
 
+    checkAuth();
+  }, []);
   const handleLogin = async () => {
   try {
     const response = await axios.post(' https://6fd2-27-131-1-4.ngrok-free.app/login',{
